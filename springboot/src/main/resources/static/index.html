@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        label {
+            display: inline-block;
+            width: 120px;
+            text-align: left
+        }
+
+        input {
+            width: 300px
+        }
+
+        .row {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<fieldset style="width: 50%;margin: 50px auto;">
+    <legend>小汽车表</legend>
+    <form style="width: 70%;margin: 50px auto;">
+        <div class="row">
+            <label for="id">ID：</label>
+            <input type="number" id="id">
+        </div>
+        <div class="row">
+            <label for="name">车名：</label>
+            <input type="text" id="name">
+        </div>
+        <div class="row">
+            <label for="price">价格：</label>
+            <input type="number" step="0.01" id="price">
+        </div>
+        <div class="row">
+            <label for="createDate">生产日期：</label>
+            <input type="date" id="createDate">
+        </div>
+        <div class="row" style="text-align: center">
+            <button type="button" id="btnSave">保存</button>
+        </div>
+    </form>
+</fieldset>
+<script src="js/jquery.2.1.4.min.js"></script>
+<script src="layer/2.4/layer.js"></script>
+<script>
+    $(window).on('load', () => {
+        queryCar(1);
+    });
+
+    $('#btnSave').click(() => {
+        let formDate = {
+            id: $('#id').val(),
+            name: $('#name').val(),
+            price: $('#price').val(),
+            createDate: $('#createDate').val()
+        };
+        $.ajax({
+            type: 'post',
+            url: '/api/modifyCar',
+            data: formDate,
+            dataType: 'json',
+            success: (data) => {
+                // console.log(data);
+                alert(data.message);
+                if (data.code == 200) {
+                    queryCar(1);
+                }
+            }
+        })
+    });
+
+    function queryCar(id) {
+        $.ajax({
+            type: 'get',
+            url: '/api/getCar',
+            data: {id: id},
+            dataType: 'json',
+            success: (data) => {
+                // console.log(data);
+                $('#id').val(data.id);
+                $('#name').val(data.name);
+                $('#price').val(data.price);
+                $('#createDate').val(data.createDate);
+            }
+        })
+    }
+</script>
+</body>
+</html>
